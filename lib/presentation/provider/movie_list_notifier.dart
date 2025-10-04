@@ -1,42 +1,52 @@
 import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/domain/usecases/get_now_playing_movies.dart';
-import 'package:ditonton/common/state_enum.dart';
 import 'package:ditonton/domain/usecases/get_popular_movies.dart';
 import 'package:ditonton/domain/usecases/get_top_rated_movies.dart';
+import 'package:ditonton/domain/usecases/get_tv_series.dart';
+import 'package:ditonton/common/state_enum.dart';
 import 'package:flutter/material.dart';
 
 class MovieListNotifier extends ChangeNotifier {
+  // ================= Movies =================
   var _nowPlayingMovies = <Movie>[];
   List<Movie> get nowPlayingMovies => _nowPlayingMovies;
-
   RequestState _nowPlayingState = RequestState.Empty;
   RequestState get nowPlayingState => _nowPlayingState;
 
   var _popularMovies = <Movie>[];
   List<Movie> get popularMovies => _popularMovies;
-
   RequestState _popularMoviesState = RequestState.Empty;
   RequestState get popularMoviesState => _popularMoviesState;
 
   var _topRatedMovies = <Movie>[];
   List<Movie> get topRatedMovies => _topRatedMovies;
-
   RequestState _topRatedMoviesState = RequestState.Empty;
   RequestState get topRatedMoviesState => _topRatedMoviesState;
 
+  // ================= TV Series =================
+  var _tvSeries = <Movie>[]; // Bisa nanti diganti TVSeries entity
+  List<Movie> get tvSeries => _tvSeries;
+  RequestState _tvSeriesState = RequestState.Empty;
+  RequestState get tvSeriesState => _tvSeriesState;
+
+  // ================= Message =================
   String _message = '';
   String get message => _message;
+
+  // ================= Usecases =================
+  final GetNowPlayingMovies getNowPlayingMovies;
+  final GetPopularMovies getPopularMovies;
+  final GetTopRatedMovies getTopRatedMovies;
+  final GetTVSeries getPopularTvSeries; // Perbaikan: nama konsisten
 
   MovieListNotifier({
     required this.getNowPlayingMovies,
     required this.getPopularMovies,
     required this.getTopRatedMovies,
+    required this.getPopularTvSeries, // Pastikan sama dengan deklarasi
   });
 
-  final GetNowPlayingMovies getNowPlayingMovies;
-  final GetPopularMovies getPopularMovies;
-  final GetTopRatedMovies getTopRatedMovies;
-
+  // ================= Functions =================
   Future<void> fetchNowPlayingMovies() async {
     _nowPlayingState = RequestState.Loading;
     notifyListeners();

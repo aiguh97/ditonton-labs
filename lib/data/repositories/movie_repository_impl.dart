@@ -28,7 +28,8 @@ class MovieRepositoryImpl implements MovieRepository {
       try {
         final result = await remoteDataSource.getNowPlayingMovies();
         localDataSource.cacheNowPlayingMovies(
-            result.map((movie) => MovieTable.fromDTO(movie)).toList());
+          result.map((movie) => MovieTable.fromDTO(movie)).toList(),
+        );
         return Right(result.map((model) => model.toEntity()).toList());
       } on ServerException {
         return Left(ServerFailure(''));
@@ -66,6 +67,18 @@ class MovieRepositoryImpl implements MovieRepository {
       return Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  // @override
+  // Future<Either<Failure, List<Movie>>> getTVSeries() async {
+  //   try {
+  //     final result = await remoteDataSource.getTVSeries();
+  //     return Right(result.map((model) => model.toEntity()).toList());
+  //   } on ServerException {
+  //     return Left(ServerFailure(''));
+  //   } on SocketException {
+  //     return Left(ConnectionFailure('Failed to connect to the network'));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, List<Movie>>> getPopularMovies() async {
@@ -106,8 +119,9 @@ class MovieRepositoryImpl implements MovieRepository {
   @override
   Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async {
     try {
-      final result =
-          await localDataSource.insertWatchlist(MovieTable.fromEntity(movie));
+      final result = await localDataSource.insertWatchlist(
+        MovieTable.fromEntity(movie),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
@@ -119,8 +133,9 @@ class MovieRepositoryImpl implements MovieRepository {
   @override
   Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async {
     try {
-      final result =
-          await localDataSource.removeWatchlist(MovieTable.fromEntity(movie));
+      final result = await localDataSource.removeWatchlist(
+        MovieTable.fromEntity(movie),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
