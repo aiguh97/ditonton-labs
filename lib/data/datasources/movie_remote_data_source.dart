@@ -4,7 +4,7 @@ import 'package:ditonton/data/models/movie_detail_model.dart';
 import 'package:ditonton/data/models/movie_model.dart';
 import 'package:ditonton/data/models/movie_response.dart';
 import 'package:ditonton/common/exception.dart';
-import 'package:ditonton/domain/entities/tv.dart';
+// import 'package:ditonton/domain/entities/tv.dart';
 import 'package:http/http.dart' as http;
 
 abstract class MovieRemoteDataSource {
