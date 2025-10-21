@@ -26,8 +26,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
@@ -38,8 +38,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.toEntity());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
@@ -50,8 +50,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
@@ -62,8 +62,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
@@ -74,8 +74,8 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
@@ -86,29 +86,29 @@ class MovieRepositoryImpl implements MovieRepository {
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
       return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+    } on SocketException catch (e) {
+      return Left(ConnectionFailure(e.message));
     }
   }
 
   @override
   Future<Either<Failure, String>> saveWatchlist(MovieDetail movie) async {
     try {
-      final result =
-          await localDataSource.insertWatchlist(MovieTable.fromEntity(movie));
+      final result = await localDataSource.insertWatchlist(
+        MovieTable.fromEntity(movie),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
-    } catch (e) {
-      throw e;
     }
   }
 
   @override
   Future<Either<Failure, String>> removeWatchlist(MovieDetail movie) async {
     try {
-      final result =
-          await localDataSource.removeWatchlist(MovieTable.fromEntity(movie));
+      final result = await localDataSource.removeWatchlist(
+        MovieTable.fromEntity(movie),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));

@@ -27,12 +27,12 @@ final testMovieDetail = MovieDetail(
   backdropPath: 'backdropPath',
   genres: [Genre(id: 1, name: 'Action')],
   id: 1,
-  originalTitle: 'Original Title',
-  overview: 'Overview of the movie',
+  originalTitle: 'originalTitle', // ubah lowercase
+  overview: 'overview', // ubah lowercase
   posterPath: 'posterPath',
-  releaseDate: '2020-05-05',
+  releaseDate: 'releaseDate', // ubah ke lowercase
   runtime: 120,
-  title: 'Title',
+  title: 'title', // ubah lowercase
   voteAverage: 1.0,
   voteCount: 1,
 );
