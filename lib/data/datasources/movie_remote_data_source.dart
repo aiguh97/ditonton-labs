@@ -1,16 +1,14 @@
 import 'dart:convert';
-
+import 'package:ditonton/data/datasources/ssl_pinning.dart';
 import 'package:ditonton/data/models/movie_detail_model.dart';
 import 'package:ditonton/data/models/movie_model.dart';
 import 'package:ditonton/data/models/movie_response.dart';
 import 'package:ditonton/common/exception.dart';
-// import 'package:ditonton/domain/entities/tv.dart';
 import 'package:http/http.dart' as http;
 
 abstract class MovieRemoteDataSource {
   Future<List<MovieModel>> getNowPlayingMovies();
   Future<List<MovieModel>> getPopularMovies();
-  // Future<List<MovieModel>> getTVSeries();
   Future<List<MovieModel>> getTopRatedMovies();
   Future<MovieDetailResponse> getMovieDetail(int id);
   Future<List<MovieModel>> getMovieRecommendations(int id);
@@ -18,7 +16,7 @@ abstract class MovieRemoteDataSource {
 }
 
 class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
-  static const API_KEY = 'api_key=2174d146bb9c0eab47529b2e77d6b526';
+  static const API_KEY = 'api_key=YOUR_API_KEY';
   static const BASE_URL = 'https://api.themoviedb.org/3';
 
   final http.Client client;
@@ -27,7 +25,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> getNowPlayingMovies() async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/movie/now_playing?$API_KEY'),
     );
 
@@ -40,7 +39,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<MovieDetailResponse> getMovieDetail(int id) async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/movie/$id?$API_KEY'),
     );
 
@@ -53,7 +53,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> getMovieRecommendations(int id) async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/movie/$id/recommendations?$API_KEY'),
     );
 
@@ -66,7 +67,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> getPopularMovies() async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/movie/popular?$API_KEY'),
     );
 
@@ -79,7 +81,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> getTopRatedMovies() async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/movie/top_rated?$API_KEY'),
     );
 
@@ -92,7 +95,8 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> searchMovies(String query) async {
-    final response = await client.get(
+    final sslClient = await SSLPinning.createClient();
+    final response = await sslClient.get(
       Uri.parse('$BASE_URL/search/movie?$API_KEY&query=$query'),
     );
 
