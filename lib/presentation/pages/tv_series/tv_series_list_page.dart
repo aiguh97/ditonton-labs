@@ -6,15 +6,16 @@ import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dar
 import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
-import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart' hide
-  FetchPopularTvSeriesEvent,
-  FetchTopRatedTvSeriesEvent,
-  PopularTvSeriesLoading,
-  PopularTvSeriesLoaded,
-  PopularTvSeriesError,
-  TopRatedTvSeriesLoading,
-  TopRatedTvSeriesLoaded,
-  TopRatedTvSeriesError;
+import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart'
+    hide
+        FetchPopularTvSeriesEvent,
+        FetchTopRatedTvSeriesEvent,
+        PopularTvSeriesLoading,
+        PopularTvSeriesLoaded,
+        PopularTvSeriesError,
+        TopRatedTvSeriesLoading,
+        TopRatedTvSeriesLoaded,
+        TopRatedTvSeriesError;
 import 'package:ditonton/presentation/bloc/tv_series/popular_tv_series/popular_tv_series_bloc.dart';
 import 'package:ditonton/presentation/bloc/tv_series/top_rated_tv_series/top_rated_tv_series_bloc.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,12 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
       context.read<TvSeriesListBloc>().add(
         const FetchNowPlayingTvSeriesEvent(),
       );
-      context.read<PopularTvSeriesBloc>().add(const FetchPopularTvSeriesEvent());
-      context.read<TopRatedTvSeriesBloc>().add(const FetchTopRatedTvSeriesEvent());
+      context.read<PopularTvSeriesBloc>().add(
+        const FetchPopularTvSeriesEvent(),
+      );
+      context.read<TopRatedTvSeriesBloc>().add(
+        const FetchTopRatedTvSeriesEvent(),
+      );
     });
   }
 

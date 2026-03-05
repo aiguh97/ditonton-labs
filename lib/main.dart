@@ -30,9 +30,42 @@ import 'package:ditonton/presentation/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ditonton/injection.dart' as di;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'core/ssl_pinning.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:async';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize SSL pinning if cert provided
+  await MyHttpOverrides.initialize();
+
+  // Initialize dependency injection
   di.init();
+
+  // Initialize Firebase if configuration files are present.
+  try {
+    await Firebase.initializeApp();
+    // Enable Crashlytics collection only in release mode by default.
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      if (kReleaseMode) {
+        FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+      }
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      if (kReleaseMode) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      }
+      return true;
+    };
+  } catch (e) {
+    // Firebase not configured; continue without analytics/crashlytics.
+  }
+
   runApp(MyApp());
 }
 

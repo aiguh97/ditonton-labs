@@ -1,66 +1,71 @@
-import 'package:ditonton/common/state_enum.dart';
+import 'dart:async';
+
+import 'package:dartz/dartz.dart';
+import 'package:ditonton/common/failure.dart';
 import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/domain/repositories/tv_series_repository.dart';
+import 'package:ditonton/domain/usecases/tv_series/get_top_rated_tv_series.dart';
+import 'package:ditonton/presentation/bloc/tv_series/top_rated_tv_series/top_rated_tv_series_bloc.dart';
 import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
-import 'package:ditonton/presentation/provider/tv_series/top_rated_tv_series_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'top_rated_tv_series_test.mocks.dart';
+class _FakeTvRepo implements TvSeriesRepository {
+  @override
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
-@GenerateMocks([TopRatedTvSeriesNotifier])
+class StubGetTopRatedTvSeries extends GetTopRatedTvSeries {
+  final Future<Either<Failure, List<TvSeries>>> Function() _executor;
+  StubGetTopRatedTvSeries(this._executor) : super(_FakeTvRepo());
+  @override
+  Future<Either<Failure, List<TvSeries>>> execute() => _executor();
+}
+
+Widget _makeTestableWidget(TopRatedTvSeriesBloc bloc) {
+  return MaterialApp(
+    home: BlocProvider<TopRatedTvSeriesBloc>.value(
+      value: bloc,
+      child: TopRatedTvSeriesPage(),
+    ),
+  );
+}
+
 void main() {
-  late MockTopRatedTvSeriesNotifier mockNotifier;
-
-  setUp(() {
-    mockNotifier = MockTopRatedTvSeriesNotifier();
-  });
-
-  Widget _makeTestableWidget(Widget body) {
-    return ChangeNotifierProvider<TopRatedTvSeriesNotifier>.value(
-      value: mockNotifier,
-      child: MaterialApp(
-        home: body,
-      ),
-    );
-  }
-
   testWidgets('Page should display center progress bar when loading',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Loading);
+    final completer = Completer<Either<Failure, List<TvSeries>>>();
+    final stub = StubGetTopRatedTvSeries(() => completer.future);
+    final bloc = TopRatedTvSeriesBloc(getTopRatedTvSeries: stub);
 
-    final progressBarFinder = find.byType(CircularProgressIndicator);
-    final centerFinder = find.byType(Center);
+    await tester.pumpWidget(_makeTestableWidget(bloc));
+    await tester.pump(const Duration(milliseconds: 100));
 
-    await tester.pumpWidget(_makeTestableWidget(TopRatedTvSeriesPage()));
-
-    expect(centerFinder, findsOneWidget);
-    expect(progressBarFinder, findsOneWidget);
+    expect(find.byType(Center), findsWidgets);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
   testWidgets('Page should display ListView when data is loaded',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Loaded);
-    when(mockNotifier.tvSeries).thenReturn(<TvSeries>[]);
+    final stub = StubGetTopRatedTvSeries(() async => Right(<TvSeries>[]));
+    final bloc = TopRatedTvSeriesBloc(getTopRatedTvSeries: stub);
 
-    final listViewFinder = find.byType(ListView);
+    await tester.pumpWidget(_makeTestableWidget(bloc));
+    await tester.pump(const Duration(milliseconds: 100));
 
-    await tester.pumpWidget(_makeTestableWidget(TopRatedTvSeriesPage()));
-
-    expect(listViewFinder, findsOneWidget);
+    expect(find.byType(ListView), findsOneWidget);
   });
 
   testWidgets('Page should display text with message when Error',
       (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Error);
-    when(mockNotifier.message).thenReturn('Error message');
+    final stub = StubGetTopRatedTvSeries(() async => Left(ServerFailure('Error message')));
+    final bloc = TopRatedTvSeriesBloc(getTopRatedTvSeries: stub);
 
-    final textFinder = find.byKey(Key('error_message'));
+    await tester.pumpWidget(_makeTestableWidget(bloc));
+    await tester.pump(const Duration(milliseconds: 100));
 
-    await tester.pumpWidget(_makeTestableWidget(TopRatedTvSeriesPage()));
-
+    final textFinder = find.byKey(const Key('error_message'));
     expect(textFinder, findsOneWidget);
   });
 }
