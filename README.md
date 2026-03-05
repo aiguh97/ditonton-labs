@@ -36,7 +36,7 @@ Tracked events include:
 
 ### Screenshot
 
-![Firebase Analytics](screenshots/firebase_analytics.png)
+![Firebase Analytics](screenshoots/firebase_analytics.png)
 
 ------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ This helps developers quickly detect and fix application issues.
 
 ### Screenshot
 
-![Firebase Crashlytics](screenshots/firebase_crashlytics.png)
+![Firebase Crashlytics](screenshoots/firebase_crashlytics.png)
 
 ------------------------------------------------------------------------
 
@@ -74,7 +74,7 @@ CI pipeline includes:
 
 ### Screenshot
 
-![CI Pipeline](screenshots/ci.png)
+![CI Pipeline](screenshoots/ci.png)
 
 ------------------------------------------------------------------------
 
@@ -128,11 +128,11 @@ flutter test --coverage
 
 ------------------------------------------------------------------------
 
-# Screenshots
+# screenshoots
 
-All feature screenshots are located inside the **screenshots** folder.
+All feature screenshoots are located inside the **screenshoots** folder.
 
-    screenshots/
+    screenshoots/
      ├── ci.png
      ├── firebase_analytics.png
      ├── firebase_crashlytics.png
