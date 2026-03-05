@@ -1,36 +1,27 @@
 import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/domain/entities/movie_detail.dart';
-import 'package:equatable/equatable.dart';
 
-abstract class MovieDetailState extends Equatable {
-  const MovieDetailState();
-
-  @override
-  List<Object> get props => [];
-}
+abstract class MovieDetailState {}
 
 class MovieDetailEmpty extends MovieDetailState {}
 
 class MovieDetailLoading extends MovieDetailState {}
 
-class MovieDetailHasData extends MovieDetailState {
-  final MovieDetail movieDetail;
+class MovieDetailLoaded extends MovieDetailState {
+  final MovieDetail movie;
   final List<Movie> recommendations;
 
-  const MovieDetailHasData({
-    required this.movieDetail,
-    required this.recommendations,
-  });
+  MovieDetailLoaded(this.movie, this.recommendations);
+}
 
-  @override
-  List<Object> get props => [movieDetail, recommendations];
+class WatchlistStatusLoaded extends MovieDetailState {
+  final bool isAdded;
+
+  WatchlistStatusLoaded(this.isAdded);
 }
 
 class MovieDetailError extends MovieDetailState {
   final String message;
 
-  const MovieDetailError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  MovieDetailError(this.message);
 }

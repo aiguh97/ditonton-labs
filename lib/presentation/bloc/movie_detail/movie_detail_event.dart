@@ -1,17 +1,33 @@
-import 'package:equatable/equatable.dart';
+import 'package:ditonton/domain/entities/movie_detail.dart';
 
-abstract class MovieDetailEvent extends Equatable {
-  const MovieDetailEvent();
+abstract class MovieDetailEvent {}
 
-  @override
-  List<Object> get props => [];
-}
-
-class FetchMovieDetail extends MovieDetailEvent {
+class FetchMovieDetailEvent extends MovieDetailEvent {
   final int id;
 
-  const FetchMovieDetail(this.id);
+  FetchMovieDetailEvent(this.id);
+}
 
-  @override
-  List<Object> get props => [id];
+class FetchMovieRecommendationsEvent extends MovieDetailEvent {
+  final int id;
+
+  FetchMovieRecommendationsEvent(this.id);
+}
+
+class AddWatchlistEvent extends MovieDetailEvent {
+  final MovieDetail movie;
+
+  AddWatchlistEvent(this.movie);
+}
+
+class RemoveWatchlistEvent extends MovieDetailEvent {
+  final MovieDetail movie;
+
+  RemoveWatchlistEvent(this.movie);
+}
+
+class LoadWatchlistStatusEvent extends MovieDetailEvent {
+  final int id;
+
+  LoadWatchlistStatusEvent(this.id);
 }

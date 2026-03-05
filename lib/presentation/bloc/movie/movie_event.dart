@@ -30,11 +30,16 @@ class FetchMovieRecommendations extends MovieEvent {
   @override
   List<Object> get props => [id];
 }
+// ================= WATCHLIST =================
 
-class SearchMovies extends MovieEvent {
+class FetchWatchlistMoviesEvent extends MovieEvent {}
+
+class FetchPopularMoviesEvent extends MovieEvent {}
+
+class SearchMoviesEvent extends MovieEvent {
   final String query;
 
-  const SearchMovies(this.query);
+  const SearchMoviesEvent(this.query);
 
   @override
   List<Object> get props => [query];
