@@ -7,9 +7,11 @@ import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dar
 import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
-import 'package:ditonton/presentation/provider/tv_series/tv_series_list_notifier.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_event.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_state.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TvSeriesListPage extends StatefulWidget {
   static const ROUTE_NAME = '/tv-series';
@@ -23,12 +25,11 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(
-      () => Provider.of<TvSeriesListNotifier>(context, listen: false)
-        ..fetchNowPlayingTvSeries()
-        ..fetchPopularTvSeries()
-        ..fetchTopRatedTvSeries(),
-    );
+    Future.microtask(() {
+      context.read<NowPlayingTvSeriesBloc>().add(FetchNowPlayingTvSeries());
+      context.read<PopularTvSeriesBloc>().add(FetchPopularTvSeries());
+      context.read<TopRatedTvSeriesBloc>().add(FetchTopRatedTvSeries());
+    });
   }
 
   @override
@@ -60,15 +61,16 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
                   );
                 },
               ),
-              Consumer<TvSeriesListNotifier>(
-                builder: (context, data, child) {
-                  final state = data.nowPlayingState;
-                  if (state == RequestState.Loading) {
+              BlocBuilder<NowPlayingTvSeriesBloc, TvSeriesState>(
+                builder: (context, state) {
+                  if (state is TvSeriesLoading) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (state == RequestState.Loaded) {
-                    return TvSeriesList(data.nowPlayingTvSeries);
-                  } else {
+                  } else if (state is TvSeriesHasData) {
+                    return TvSeriesList(state.result);
+                  } else if (state is TvSeriesError) {
                     return Text('Failed');
+                  } else {
+                    return SizedBox();
                   }
                 },
               ),
@@ -78,13 +80,12 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
                   Navigator.pushNamed(context, PopularTvSeriesPage.ROUTE_NAME);
                 },
               ),
-              Consumer<TvSeriesListNotifier>(
-                builder: (context, data, child) {
-                  final state = data.popularState;
-                  if (state == RequestState.Loading) {
+              BlocBuilder<PopularTvSeriesBloc, TvSeriesState>(
+                builder: (context, state) {
+                  if (state is TvSeriesLoading) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (state == RequestState.Loaded) {
-                    return TvSeriesList(data.popularTvSeries);
+                  } else if (state is TvSeriesHasData) {
+                    return TvSeriesList(state.result);
                   } else {
                     return Text('Failed');
                   }
@@ -96,13 +97,12 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
                   Navigator.pushNamed(context, TopRatedTvSeriesPage.ROUTE_NAME);
                 },
               ),
-              Consumer<TvSeriesListNotifier>(
-                builder: (context, data, child) {
-                  final state = data.topRatedState;
-                  if (state == RequestState.Loading) {
+              BlocBuilder<TopRatedTvSeriesBloc, TvSeriesState>(
+                builder: (context, state) {
+                  if (state is TvSeriesLoading) {
                     return Center(child: CircularProgressIndicator());
-                  } else if (state == RequestState.Loaded) {
-                    return TvSeriesList(data.topRatedTvSeries);
+                  } else if (state is TvSeriesHasData) {
+                    return TvSeriesList(state.result);
                   } else {
                     return Text('Failed');
                   }

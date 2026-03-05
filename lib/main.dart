@@ -13,7 +13,17 @@ import 'package:ditonton/presentation/pages/movies/popular_movies_page.dart';
 import 'package:ditonton/presentation/pages/movies/search_movies_page.dart';
 import 'package:ditonton/presentation/pages/movies/top_rated_movies_page.dart';
 import 'package:ditonton/presentation/pages/movies/watchlist_movies_page.dart';
-// import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/now_playing_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/tv_series_list_page.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_event.dart';
+import 'package:ditonton/presentation/bloc/tv/tv_search_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv/watchlist_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series_detail/tv_series_detail_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ditonton/injection.dart' as di;
@@ -99,54 +109,76 @@ class MyApp extends StatelessWidget {
               ),
             );
 
-          case MovieDetailPage.ROUTE_NAME:
-            final id = settings.arguments as int;
+          case WatchlistMoviesPage.ROUTE_NAME:
             return MaterialPageRoute(
               builder: (_) => MultiBlocProvider(
                 providers: [
                   BlocProvider(
-                    create: (_) =>
-                        di.locator<MovieDetailBloc>()
-                          ..add(FetchMovieDetailEvent(id)),
+                    create: (_) => di.locator<WatchlistMovieBloc>()
+                      ..add(FetchWatchlistMoviesEvent()),
                   ),
                   BlocProvider(
-                    create: (_) =>
-                        di.locator<MovieRecommendationBloc>()
-                          ..add(FetchMovieRecommendations(id)),
+                    create: (_) => di.locator<WatchlistTvSeriesBloc>()
+                      ..add(FetchWatchlistTvSeriesEvent()),
                   ),
                 ],
-                child: MovieDetailPage(id: id),
-              ),
-            );
-
-          case WatchlistMoviesPage.ROUTE_NAME:
-            return MaterialPageRoute(
-              builder: (_) => BlocProvider(
-                create: (_) =>
-                    di.locator<WatchlistMovieBloc>()
-                      ..add(FetchWatchlistMoviesEvent()),
                 child: WatchlistMoviesPage(),
               ),
             );
 
           // ================= TV SERIES =================
+          case TvSeriesListPage.ROUTE_NAME:
+            return MaterialPageRoute(
+              builder: (_) => MultiBlocProvider(
+                providers: [
+                  BlocProvider(create: (_) => di.locator<NowPlayingTvSeriesBloc>()),
+                  BlocProvider(create: (_) => di.locator<PopularTvSeriesBloc>()),
+                  BlocProvider(create: (_) => di.locator<TopRatedTvSeriesBloc>()),
+                ],
+                child: TvSeriesListPage(),
+              ),
+            );
 
-          // case TvSeriesDetailPage.ROUTE_NAME:
-          //   final id = settings.arguments as int;
-          //   return MaterialPageRoute(
-          //     builder: (_) => MultiBlocProvider(
-          //       providers: [
-          //         BlocProvider(
-          //           create: (_) =>
-          //               di.locator<TvSeriesDetailBloc>()
-          //                 ..add(FetchTvSeriesDetail(id)),
-          //         ),
-          //       ],
-          //       child: TvSeriesDetailPage(id: id),
-          //     ),
-          //   );
+          case NowPlayingTvSeriesPage.ROUTE_NAME:
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => di.locator<NowPlayingTvSeriesBloc>(),
+                child: NowPlayingTvSeriesPage(),
+              ),
+            );
 
-          // tambahkan lainnya sama pola
+          case PopularTvSeriesPage.ROUTE_NAME:
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => di.locator<PopularTvSeriesBloc>(),
+                child: PopularTvSeriesPage(),
+              ),
+            );
+
+          case TopRatedTvSeriesPage.ROUTE_NAME:
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => di.locator<TopRatedTvSeriesBloc>(),
+                child: TopRatedTvSeriesPage(),
+              ),
+            );
+
+          case SearchTvSeriesPage.ROUTE_NAME:
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => di.locator<TvSeriesSearchBloc>(),
+                child: SearchTvSeriesPage(),
+              ),
+            );
+
+          case TvSeriesDetailPage.ROUTE_NAME:
+            final id = settings.arguments as int;
+            return MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => di.locator<TvSeriesDetailBloc>(),
+                child: TvSeriesDetailPage(id: id),
+              ),
+            );
 
           default:
             return MaterialPageRoute(
