@@ -24,15 +24,15 @@ final testMovieList = [testMovie];
 
 final testMovieDetail = MovieDetail(
   adult: false,
-  backdropPath: 'backdropPath',
+  backdropPath: '/path.jpg',
   genres: [Genre(id: 1, name: 'Action')],
   id: 1,
-  originalTitle: 'originalTitle', // ubah lowercase
-  overview: 'overview', // ubah lowercase
-  posterPath: 'posterPath',
-  releaseDate: 'releaseDate', // ubah ke lowercase
+  originalTitle: 'Original Title',
+  overview: 'Overview of the movie',
+  posterPath: '/path.jpg',
+  releaseDate: '2020-05-05',
   runtime: 120,
-  title: 'title', // ubah lowercase
+  title: 'Title',
   voteAverage: 1.0,
   voteCount: 1,
 );

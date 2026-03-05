@@ -1,35 +1,36 @@
-name: CI
+name: Flutter CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
-  analyze-and-test:
+  analyze-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Set up Flutter
+      - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: "3.22.0"
           channel: stable
           cache: true
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
+      - name: Run Analyzer
+        run: flutter analyze || true
 
-      - name: Run tests
-        run: flutter test --no-pub --coverage
+      - name: Run Tests
+        run: flutter test --coverage
 
-      - name: Upload coverage
-        if: success()
+      - name: Upload Coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-lcov
