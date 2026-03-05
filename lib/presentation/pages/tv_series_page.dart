@@ -1,100 +1,181 @@
-// import 'package:ditonton/presentation/pages/movie_detail_page.dart';
-// import 'package:ditonton/presentation/provider/tv_series_notifier.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:ditonton/presentation/widgets/tv_card.dart';
-// import 'package:ditonton/common/state_enum.dart';
-// import 'package:ditonton/domain/entities/tv.dart';
-// import 'package:ditonton/domain/entities/detail_entity.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ditonton/common/constants.dart';
+import 'package:ditonton/domain/entities/tv_series.dart';
+import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
+import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
+import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart' hide FetchPopularTvSeriesEvent, FetchTopRatedTvSeriesEvent, PopularTvSeriesLoading, PopularTvSeriesLoaded, PopularTvSeriesError, TopRatedTvSeriesLoading, TopRatedTvSeriesLoaded, TopRatedTvSeriesError;
+import 'package:ditonton/presentation/bloc/tv_series/popular_tv_series/popular_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series/top_rated_tv_series/top_rated_tv_series_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// class TvSeriesPage extends StatefulWidget {
-//   static const ROUTE_NAME = '/tv-series';
-//   const TvSeriesPage({super.key});
+class TvSeriesPage extends StatefulWidget {
+  static const ROUTE_NAME = '/tv-series';
+  const TvSeriesPage({super.key});
 
-//   @override
-//   State<TvSeriesPage> createState() => _TvSeriesPageState();
-// }
+  @override
+  State<TvSeriesPage> createState() => _TvSeriesPageState();
+}
 
-// class _TvSeriesPageState extends State<TvSeriesPage> {
-//   final TextEditingController _controller = TextEditingController();
+class _TvSeriesPageState extends State<TvSeriesPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      context.read<TvSeriesListBloc>().add(const FetchNowPlayingTvSeriesEvent());
+      context.read<PopularTvSeriesBloc>().add(const FetchPopularTvSeriesEvent());
+      context.read<TopRatedTvSeriesBloc>().add(const FetchTopRatedTvSeriesEvent());
+    });
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     Future.microtask(
-//       () =>
-//           Provider.of<TVSeriesNotifier>(context, listen: false).fetchTVSeries(),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('TV Series'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, SearchTvSeriesPage.ROUTE_NAME);
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Now Playing',
+                style: kHeading6,
+              ),
+              BlocBuilder<TvSeriesListBloc, TvSeriesListState>(
+                builder: (context, state) {
+                  if (state is NowPlayingTvSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is NowPlayingTvSeriesLoaded) {
+                    return TvSeriesList(state.tvSeries);
+                  } else if (state is NowPlayingTvSeriesError) {
+                    return Text('Failed: ${state.message}');
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
+              _buildSubHeading(
+                title: 'Popular',
+                onTap: () =>
+                    Navigator.pushNamed(context, PopularTvSeriesPage.ROUTE_NAME),
+              ),
+              BlocBuilder<PopularTvSeriesBloc, PopularTvSeriesState>(
+                builder: (context, state) {
+                  if (state is PopularTvSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is PopularTvSeriesLoaded) {
+                    return TvSeriesList(state.tvSeries);
+                  } else if (state is PopularTvSeriesError) {
+                    return Text('Failed: ${state.message}');
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
+              _buildSubHeading(
+                title: 'Top Rated',
+                onTap: () =>
+                    Navigator.pushNamed(context, TopRatedTvSeriesPage.ROUTE_NAME),
+              ),
+              BlocBuilder<TopRatedTvSeriesBloc, TopRatedTvSeriesState>(
+                builder: (context, state) {
+                  if (state is TopRatedTvSeriesLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TopRatedTvSeriesLoaded) {
+                    return TvSeriesList(state.tvSeries);
+                  } else if (state is TopRatedTvSeriesError) {
+                    return Text('Failed: ${state.message}');
+                  } else {
+                    return const Text('Failed');
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
+  Row _buildSubHeading({required String title, required Function() onTap}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: kHeading6,
+        ),
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: const [Text('See More'), Icon(Icons.arrow_forward_ios)],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('TV Series')),
-//       body: Padding(
-//         padding: const EdgeInsets.all(8.0),
-//         child: Consumer<TVSeriesNotifier>(
-//           builder: (context, notifier, child) {
-//             Widget content;
-//             switch (notifier.state) {
-//               case RequestState.Loading:
-//                 content = const Center(child: CircularProgressIndicator());
-//                 break;
-//               case RequestState.Loaded:
-//                 content = ListView.builder(
-//                   itemCount: notifier.tvSeries.length,
-//                   itemBuilder: (context, index) {
-//                     final TVSeries tv = notifier
-//                         .tvSeries[index]; // ⚡ Gunakan tipe asli TVSeries
-//                     return InkWell(
-//                       onTap: () {
-//                         Navigator.pushNamed(
-//                           context,
-//                           DetailPage.ROUTE_NAME,
-//                           arguments: {
-//                             'detail': tv as DetailEntity,
-//                             'isMovie': false,
-//                           },
-//                         );
-//                       },
-//                       child: TVSeriesCard(tv),
-//                     );
-//                   },
-//                 );
-//                 break;
-//               case RequestState.Error:
-//                 content = Center(child: Text(notifier.message));
-//                 break;
-//               default:
-//                 content = const SizedBox();
-//             }
+class TvSeriesList extends StatelessWidget {
+  final List<TvSeries> tvSeries;
 
-//             return Column(
-//               children: [
-//                 TextField(
-//                   controller: _controller,
-//                   decoration: const InputDecoration(
-//                     hintText: 'Search TV Series',
-//                     prefixIcon: Icon(Icons.search),
-//                     border: OutlineInputBorder(),
-//                   ),
-//                   onChanged: (query) {
-//                     notifier.search(query);
-//                   },
-//                 ),
-//                 const SizedBox(height: 8),
-//                 Expanded(child: content),
-//               ],
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
+  const TvSeriesList(this.tvSeries);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          final tv = tvSeries[index];
+          return Container(
+            padding: const EdgeInsets.all(8),
+            child: InkWell(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  TvSeriesDetailPage.ROUTE_NAME,
+                  arguments: tv.id,
+                );
+              },
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                child: CachedNetworkImage(
+                  imageUrl: '$BASE_IMAGE_URL${tv.posterPath}',
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              ),
+            ),
+          );
+        },
+        itemCount: tvSeries.length,
+      ),
+    );
+  }
+}
