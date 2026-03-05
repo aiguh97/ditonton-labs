@@ -11,7 +11,7 @@ class NowPlayingTvSeriesBloc
   final GetNowPlayingTvSeries getNowPlayingTvSeries;
 
   NowPlayingTvSeriesBloc({required this.getNowPlayingTvSeries})
-      : super(const NowPlayingTvSeriesInitial()) {
+    : super(const NowPlayingTvSeriesInitial()) {
     on<FetchNowPlayingTvSeriesEvent>(_onFetchNowPlayingTvSeries);
   }
 

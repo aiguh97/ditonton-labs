@@ -11,9 +11,7 @@ class SearchMoviesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Search Movies'),
-      ),
+      appBar: AppBar(title: Text('Search Movies')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -31,16 +29,11 @@ class SearchMoviesPage extends StatelessWidget {
               textInputAction: TextInputAction.search,
             ),
             const SizedBox(height: 16),
-            Text(
-              'Search Result',
-              style: kHeading6,
-            ),
+            Text('Search Result', style: kHeading6),
             BlocBuilder<MovieSearchBloc, MovieSearchState>(
               builder: (context, state) {
                 if (state is MovieSearchLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 } else if (state is MovieSearchLoaded) {
                   final result = state.movies;
                   return Expanded(
@@ -65,9 +58,7 @@ class SearchMoviesPage extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Expanded(
-                    child: Container(),
-                  );
+                  return Expanded(child: Container());
                 }
               },
             ),

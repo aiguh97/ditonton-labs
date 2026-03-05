@@ -6,7 +6,17 @@ import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dar
 import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart';
-import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart' hide
+  FetchPopularTvSeriesEvent,
+  FetchTopRatedTvSeriesEvent,
+  PopularTvSeriesLoading,
+  PopularTvSeriesLoaded,
+  PopularTvSeriesError,
+  TopRatedTvSeriesLoading,
+  TopRatedTvSeriesLoaded,
+  TopRatedTvSeriesError;
+import 'package:ditonton/presentation/bloc/tv_series/popular_tv_series/popular_tv_series_bloc.dart';
+import 'package:ditonton/presentation/bloc/tv_series/top_rated_tv_series/top_rated_tv_series_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,9 +33,11 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<TvSeriesListBloc>().add(const FetchNowPlayingTvSeriesEvent());
-      context.read<TvSeriesListBloc>().add(const FetchPopularTvSeriesEvent());
-      context.read<TvSeriesListBloc>().add(const FetchTopRatedTvSeriesEvent());
+      context.read<TvSeriesListBloc>().add(
+        const FetchNowPlayingTvSeriesEvent(),
+      );
+      context.read<PopularTvSeriesBloc>().add(const FetchPopularTvSeriesEvent());
+      context.read<TopRatedTvSeriesBloc>().add(const FetchTopRatedTvSeriesEvent());
     });
   }
 
@@ -75,12 +87,14 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
                   Navigator.pushNamed(context, PopularTvSeriesPage.ROUTE_NAME);
                 },
               ),
-              BlocBuilder<TvSeriesListBloc, TvSeriesListState>(
+              BlocBuilder<PopularTvSeriesBloc, PopularTvSeriesState>(
                 builder: (context, state) {
                   if (state is PopularTvSeriesLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is PopularTvSeriesLoaded) {
                     return TvSeriesList(state.tvSeries);
+                  } else if (state is PopularTvSeriesError) {
+                    return Text('Failed: ${state.message}');
                   } else {
                     return const Text('Failed');
                   }
@@ -92,12 +106,14 @@ class _TvSeriesListPageState extends State<TvSeriesListPage> {
                   Navigator.pushNamed(context, TopRatedTvSeriesPage.ROUTE_NAME);
                 },
               ),
-              BlocBuilder<TvSeriesListBloc, TvSeriesListState>(
+              BlocBuilder<TopRatedTvSeriesBloc, TopRatedTvSeriesState>(
                 builder: (context, state) {
                   if (state is TopRatedTvSeriesLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is TopRatedTvSeriesLoaded) {
                     return TvSeriesList(state.tvSeries);
+                  } else if (state is TopRatedTvSeriesError) {
+                    return Text('Failed: ${state.message}');
                   } else {
                     return const Text('Failed');
                   }

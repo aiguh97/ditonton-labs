@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'tv_series_search_event.dart';
 part 'tv_series_search_state.dart';
 
-class TvSeriesSearchBloc extends Bloc<TvSeriesSearchEvent, TvSeriesSearchState> {
+class TvSeriesSearchBloc
+    extends Bloc<TvSeriesSearchEvent, TvSeriesSearchState> {
   final SearchTvSeries searchTvSeries;
 
   TvSeriesSearchBloc({required this.searchTvSeries})
-      : super(const TvSeriesSearchInitial()) {
+    : super(const TvSeriesSearchInitial()) {
     on<SearchTvSeriesEvent>(_onSearchTvSeries);
   }
 

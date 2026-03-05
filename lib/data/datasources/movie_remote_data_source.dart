@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:ditonton/data/models/movie_detail_model.dart';
 import 'package:ditonton/data/models/movie_model.dart';
@@ -27,79 +29,115 @@ class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
 
   @override
   Future<List<MovieModel>> getNowPlayingMovies() async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/movie/now_playing?$API_KEY'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/movie/now_playing?$API_KEY'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieResponse.fromJson(json.decode(response.body)).movieList;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieResponse.fromJson(json.decode(response.body)).movieList;
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 
   @override
   Future<MovieDetailResponse> getMovieDetail(int id) async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/movie/$id?$API_KEY'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/movie/$id?$API_KEY'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieDetailResponse.fromJson(json.decode(response.body));
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieDetailResponse.fromJson(json.decode(response.body));
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 
   @override
   Future<List<MovieModel>> getMovieRecommendations(int id) async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/movie/$id/recommendations?$API_KEY'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/movie/$id/recommendations?$API_KEY'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieResponse.fromJson(json.decode(response.body)).movieList;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieResponse.fromJson(json.decode(response.body)).movieList;
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 
   @override
   Future<List<MovieModel>> getPopularMovies() async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/movie/popular?$API_KEY'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/movie/popular?$API_KEY'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieResponse.fromJson(json.decode(response.body)).movieList;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieResponse.fromJson(json.decode(response.body)).movieList;
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 
   @override
   Future<List<MovieModel>> getTopRatedMovies() async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/movie/top_rated?$API_KEY'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/movie/top_rated?$API_KEY'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieResponse.fromJson(json.decode(response.body)).movieList;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieResponse.fromJson(json.decode(response.body)).movieList;
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 
   @override
   Future<List<MovieModel>> searchMovies(String query) async {
-    final response = await client.get(
-      Uri.parse('$BASE_URL/search/movie?$API_KEY&query=$query'),
-    );
+    try {
+      final response = await client
+          .get(Uri.parse('$BASE_URL/search/movie?$API_KEY&query=$query'))
+          .timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      return MovieResponse.fromJson(json.decode(response.body)).movieList;
-    } else {
-      throw ServerException();
+      if (response.statusCode == 200) {
+        return MovieResponse.fromJson(json.decode(response.body)).movieList;
+      } else {
+        throw ServerException();
+      }
+    } on SocketException catch (e) {
+      throw SocketException(e.message);
+    } on TimeoutException {
+      throw SocketException('Connection timed out');
     }
   }
 }

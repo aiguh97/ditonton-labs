@@ -63,25 +63,13 @@ void init() {
       removeWatchlist: locator(),
     ),
   );
+  locator.registerFactory(() => MovieSearchBloc(searchMovies: locator()));
+  locator.registerFactory(() => PopularMoviesBloc(getPopularMovies: locator()));
   locator.registerFactory(
-    () => MovieSearchBloc(
-      searchMovies: locator(),
-    ),
+    () => TopRatedMoviesBloc(getTopRatedMovies: locator()),
   );
   locator.registerFactory(
-    () => PopularMoviesBloc(
-      getPopularMovies: locator(),
-    ),
-  );
-  locator.registerFactory(
-    () => TopRatedMoviesBloc(
-      getTopRatedMovies: locator(),
-    ),
-  );
-  locator.registerFactory(
-    () => WatchlistMovieBloc(
-      getWatchlistMovies: locator(),
-    ),
+    () => WatchlistMovieBloc(getWatchlistMovies: locator()),
   );
   // BLoC tv series
   locator.registerFactory(
@@ -92,25 +80,15 @@ void init() {
     ),
   );
   locator.registerFactory(
-    () => NowPlayingTvSeriesBloc(
-      getNowPlayingTvSeries: locator(),
-    ),
+    () => NowPlayingTvSeriesBloc(getNowPlayingTvSeries: locator()),
   );
   locator.registerFactory(
-    () => PopularTvSeriesBloc(
-      getPopularTvSeries: locator(),
-    ),
+    () => PopularTvSeriesBloc(getPopularTvSeries: locator()),
   );
   locator.registerFactory(
-    () => TopRatedTvSeriesBloc(
-      getTopRatedTvSeries: locator(),
-    ),
+    () => TopRatedTvSeriesBloc(getTopRatedTvSeries: locator()),
   );
-  locator.registerFactory(
-    () => TvSeriesSearchBloc(
-      searchTvSeries: locator(),
-    ),
-  );
+  locator.registerFactory(() => TvSeriesSearchBloc(searchTvSeries: locator()));
   locator.registerFactory(
     () => TvSeriesDetailBloc(
       getTvSeriesDetail: locator(),
@@ -121,9 +99,7 @@ void init() {
     ),
   );
   locator.registerFactory(
-    () => WatchlistTvSeriesBloc(
-      getWatchlistTvSeries: locator(),
-    ),
+    () => WatchlistTvSeriesBloc(getWatchlistTvSeries: locator()),
   );
 
   // use case movies
@@ -165,13 +141,17 @@ void init() {
 
   // data sources
   locator.registerLazySingleton<MovieRemoteDataSource>(
-      () => MovieRemoteDataSourceImpl(client: locator()));
+    () => MovieRemoteDataSourceImpl(client: locator()),
+  );
   locator.registerLazySingleton<MovieLocalDataSource>(
-      () => MovieLocalDataSourceImpl(databaseHelper: locator()));
+    () => MovieLocalDataSourceImpl(databaseHelper: locator()),
+  );
   locator.registerLazySingleton<TvSeriesRemoteDataSource>(
-      () => TvSeriesRemoteDataSourceImpl(client: locator()));
+    () => TvSeriesRemoteDataSourceImpl(client: locator()),
+  );
   locator.registerLazySingleton<TvSeriesLocalDataSource>(
-      () => TvSeriesLocalDataSourceImpl(databaseHelper: locator()));
+    () => TvSeriesLocalDataSourceImpl(databaseHelper: locator()),
+  );
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());

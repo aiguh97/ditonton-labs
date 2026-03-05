@@ -16,24 +16,22 @@ class _TopRatedTvSeriesPageState extends State<TopRatedTvSeriesPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<TopRatedTvSeriesBloc>().add(const FetchTopRatedTvSeriesEvent());
+      context.read<TopRatedTvSeriesBloc>().add(
+        const FetchTopRatedTvSeriesEvent(),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Top Rated TV Series'),
-      ),
+      appBar: AppBar(title: Text('Top Rated TV Series')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TopRatedTvSeriesBloc, TopRatedTvSeriesState>(
           builder: (context, state) {
             if (state is TopRatedTvSeriesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is TopRatedTvSeriesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
@@ -59,9 +57,7 @@ class _TopRatedTvSeriesPageState extends State<TopRatedTvSeriesPage> {
                 child: Text(state.message),
               );
             } else {
-              return const Center(
-                child: Text('Failed'),
-              );
+              return const Center(child: Text('Failed'));
             }
           },
         ),

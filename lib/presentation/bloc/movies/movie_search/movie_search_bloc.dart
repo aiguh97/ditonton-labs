@@ -9,7 +9,8 @@ part 'movie_search_state.dart';
 class MovieSearchBloc extends Bloc<MovieSearchEvent, MovieSearchState> {
   final SearchMovies searchMovies;
 
-  MovieSearchBloc({required this.searchMovies}) : super(const MovieSearchInitial()) {
+  MovieSearchBloc({required this.searchMovies})
+    : super(const MovieSearchInitial()) {
     on<SearchMoviesEvent>(_onSearchMovies);
   }
 

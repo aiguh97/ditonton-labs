@@ -29,8 +29,12 @@ class TvSeriesDetailLoaded extends TvSeriesDetailState {
   });
 
   @override
-  List<Object> get props =>
-      [tvSeries, recommendations, isAddedToWatchlist, watchlistMessage];
+  List<Object> get props => [
+    tvSeries,
+    recommendations,
+    isAddedToWatchlist,
+    watchlistMessage,
+  ];
 }
 
 class TvSeriesDetailError extends TvSeriesDetailState {
@@ -56,6 +60,10 @@ class TvSeriesDetailWatchlistUpdated extends TvSeriesDetailState {
   });
 
   @override
-  List<Object> get props =>
-      [tvSeries, recommendations, isAddedToWatchlist, watchlistMessage];
+  List<Object> get props => [
+    tvSeries,
+    recommendations,
+    isAddedToWatchlist,
+    watchlistMessage,
+  ];
 }

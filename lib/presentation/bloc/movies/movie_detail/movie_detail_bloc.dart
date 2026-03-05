@@ -21,9 +21,9 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
   final SaveWatchlist saveWatchlist;
   final RemoveWatchlist removeWatchlist;
 
-  late MovieDetail _movieDetail;
-  late List<Movie> _recommendations;
-  late bool _isAddedToWatchlist;
+  MovieDetail? _movieDetail;
+  List<Movie> _recommendations = [];
+  bool _isAddedToWatchlist = false;
 
   MovieDetailBloc({
     required this.getMovieDetail,
@@ -43,26 +43,28 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     Emitter<MovieDetailState> emit,
   ) async {
     emit(const MovieDetailLoading());
-
     final detailResult = await getMovieDetail.execute(event.id);
+    if (detailResult.isLeft()) {
+      detailResult.fold((failure) => emit(MovieDetailError(failure.message)), (_) {});
+      return;
+    }
+
+    // extract movie (safe because it's Right)
+    late MovieDetail movie;
+    detailResult.fold((_) {}, (m) => movie = m);
+
     final recommendationResult = await getMovieRecommendations.execute(event.id);
-
-    detailResult.fold(
-      (failure) => emit(MovieDetailError(failure.message)),
-      (movie) {
-        _movieDetail = movie;
-        recommendationResult.fold(
-          (failure) {
-            emit(MovieDetailError(failure.message));
-          },
-          (recommendations) {
-            _recommendations = recommendations;
-          },
-        );
-
-        _loadWatchlistStatus(event.id, emit);
+    recommendationResult.fold(
+      (failure) {
+        _recommendations = [];
+      },
+      (recommendations) {
+        _recommendations = recommendations;
       },
     );
+
+    _movieDetail = movie;
+    await _loadWatchlistStatus(event.id, emit);
   }
 
   Future<void> _onAddMovieToWatchlist(
@@ -84,13 +86,17 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     await _loadWatchlistStatus(event.movie.id, emit);
 
     final currentState = state;
-    if (currentState is MovieDetailLoaded || currentState is MovieDetailWatchlistUpdated) {
-      emit(MovieDetailWatchlistUpdated(
-        movie: _movieDetail,
-        recommendations: _recommendations,
-        isAddedToWatchlist: _isAddedToWatchlist,
-        watchlistMessage: watchlistMessage,
-      ));
+    if (currentState is MovieDetailLoaded ||
+        currentState is MovieDetailWatchlistUpdated) {
+      if (emit.isDone) return;
+      emit(
+        MovieDetailWatchlistUpdated(
+          movie: _movieDetail!,
+          recommendations: _recommendations,
+          isAddedToWatchlist: _isAddedToWatchlist,
+          watchlistMessage: watchlistMessage,
+        ),
+      );
     }
   }
 
@@ -113,13 +119,17 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     await _loadWatchlistStatus(event.movie.id, emit);
 
     final currentState = state;
-    if (currentState is MovieDetailLoaded || currentState is MovieDetailWatchlistUpdated) {
-      emit(MovieDetailWatchlistUpdated(
-        movie: _movieDetail,
-        recommendations: _recommendations,
-        isAddedToWatchlist: _isAddedToWatchlist,
-        watchlistMessage: watchlistMessage,
-      ));
+    if (currentState is MovieDetailLoaded ||
+        currentState is MovieDetailWatchlistUpdated) {
+      if (emit.isDone) return;
+      emit(
+        MovieDetailWatchlistUpdated(
+          movie: _movieDetail!,
+          recommendations: _recommendations,
+          isAddedToWatchlist: _isAddedToWatchlist,
+          watchlistMessage: watchlistMessage,
+        ),
+      );
     }
   }
 
@@ -127,7 +137,7 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     LoadMovieWatchlistStatusEvent event,
     Emitter<MovieDetailState> emit,
   ) async {
-    _loadWatchlistStatus(event.id, emit);
+    await _loadWatchlistStatus(event.id, emit);
   }
 
   Future<void> _loadWatchlistStatus(
@@ -137,24 +147,23 @@ class MovieDetailBloc extends Bloc<MovieDetailEvent, MovieDetailState> {
     final result = await getWatchListStatus.execute(id);
     _isAddedToWatchlist = result;
 
-    // only emit a loaded state if we already have movie details
-    if (state is! MovieDetailInitial && _isInitialized()) {
-      emit(MovieDetailLoaded(
-        movie: _movieDetail,
-        recommendations: _recommendations,
-        isAddedToWatchlist: _isAddedToWatchlist,
-      ));
-    }
-  }
+    if (emit.isDone) return;
 
-  bool _isInitialized() {
-    try {
-      // Check if the late fields are initialized
-      _movieDetail;
-      _recommendations;
-      return true;
-    } catch (e) {
-      return false;
+    if (_movieDetail == null) {
+      if (!emit.isDone) emit(const MovieDetailError('Movie detail not loaded'));
+      return;
     }
-  }
+
+    if (!emit.isDone) {
+      emit(
+        MovieDetailLoaded(
+          movie: _movieDetail!,
+          recommendations: _recommendations,
+          isAddedToWatchlist: _isAddedToWatchlist,
+        ),
+      );
+    }
 }
+
+}
+

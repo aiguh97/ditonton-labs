@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'watchlist_movie_event.dart';
 part 'watchlist_movie_state.dart';
 
-class WatchlistMovieBloc extends Bloc<WatchlistMovieEvent, WatchlistMovieState> {
+class WatchlistMovieBloc
+    extends Bloc<WatchlistMovieEvent, WatchlistMovieState> {
   final GetWatchlistMovies getWatchlistMovies;
 
   WatchlistMovieBloc({required this.getWatchlistMovies})
-      : super(const WatchlistMovieInitial()) {
+    : super(const WatchlistMovieInitial()) {
     on<FetchWatchlistMoviesEvent>(_onFetchWatchlistMovies);
   }
 

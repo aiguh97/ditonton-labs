@@ -16,24 +16,22 @@ class _NowPlayingTvSeriesPageState extends State<NowPlayingTvSeriesPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<NowPlayingTvSeriesBloc>().add(const FetchNowPlayingTvSeriesEvent());
+      context.read<NowPlayingTvSeriesBloc>().add(
+        const FetchNowPlayingTvSeriesEvent(),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Now Playing TV Series'),
-      ),
+      appBar: AppBar(title: Text('Now Playing TV Series')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<NowPlayingTvSeriesBloc, NowPlayingTvSeriesState>(
           builder: (context, state) {
             if (state is NowPlayingTvSeriesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is NowPlayingTvSeriesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
@@ -59,9 +57,7 @@ class _NowPlayingTvSeriesPageState extends State<NowPlayingTvSeriesPage> {
                 child: Text(state.message),
               );
             } else {
-              return const Center(
-                child: Text('Failed'),
-              );
+              return const Center(child: Text('Failed'));
             }
           },
         ),

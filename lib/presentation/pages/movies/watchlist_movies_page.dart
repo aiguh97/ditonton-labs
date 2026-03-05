@@ -23,7 +23,9 @@ class _WatchlistPageState extends State<WatchlistMoviesPage> with RouteAware {
     // Fetch data untuk kedua tab (movie & tv series)
     Future.microtask(() {
       context.read<WatchlistMovieBloc>().add(const FetchWatchlistMoviesEvent());
-      context.read<WatchlistTvSeriesBloc>().add(const FetchWatchlistTvSeriesEvent());
+      context.read<WatchlistTvSeriesBloc>().add(
+        const FetchWatchlistTvSeriesEvent(),
+      );
     });
   }
 
@@ -36,7 +38,9 @@ class _WatchlistPageState extends State<WatchlistMoviesPage> with RouteAware {
   @override
   void didPopNext() {
     context.read<WatchlistMovieBloc>().add(const FetchWatchlistMoviesEvent());
-    context.read<WatchlistTvSeriesBloc>().add(const FetchWatchlistTvSeriesEvent());
+    context.read<WatchlistTvSeriesBloc>().add(
+      const FetchWatchlistTvSeriesEvent(),
+    );
   }
 
   @override

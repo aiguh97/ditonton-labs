@@ -23,17 +23,13 @@ class _PopularMoviesPageState extends State<PopularMoviesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Popular Movies'),
-      ),
+      appBar: AppBar(title: const Text('Popular Movies')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<PopularMoviesBloc, PopularMoviesState>(
           builder: (context, state) {
             if (state is PopularMoviesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is PopularMoviesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
@@ -59,9 +55,7 @@ class _PopularMoviesPageState extends State<PopularMoviesPage> {
                 child: Text(state.message),
               );
             } else {
-              return const Center(
-                child: Text('Failed'),
-              );
+              return const Center(child: Text('Failed'));
             }
           },
         ),

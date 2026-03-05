@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => di.locator<MovieListBloc>()),
-        BlocProvider(create: (_) => di.locator<MovieDetailBloc>()),
         BlocProvider(create: (_) => di.locator<MovieSearchBloc>()),
         BlocProvider(create: (_) => di.locator<TopRatedMoviesBloc>()),
         BlocProvider(create: (_) => di.locator<PopularMoviesBloc>()),
@@ -52,7 +51,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.locator<PopularTvSeriesBloc>()),
         BlocProvider(create: (_) => di.locator<TopRatedTvSeriesBloc>()),
         BlocProvider(create: (_) => di.locator<TvSeriesSearchBloc>()),
-        BlocProvider(create: (_) => di.locator<TvSeriesDetailBloc>()),
+        // MovieDetailBloc and TvSeriesDetailBloc are provided per-route to avoid stale state
         BlocProvider(create: (_) => di.locator<WatchlistTvSeriesBloc>()),
       ],
       child: MaterialApp(
@@ -82,7 +81,10 @@ class MyApp extends StatelessWidget {
             case MovieDetailPage.ROUTE_NAME:
               final id = settings.arguments as int;
               return MaterialPageRoute(
-                builder: (_) => MovieDetailPage(id: id),
+                builder: (_) => BlocProvider(
+                  create: (_) => di.locator<MovieDetailBloc>(),
+                  child: MovieDetailPage(id: id),
+                ),
                 settings: settings,
               );
             case SearchMoviesPage.ROUTE_NAME:
@@ -104,7 +106,10 @@ class MyApp extends StatelessWidget {
             case TvSeriesDetailPage.ROUTE_NAME:
               final id = settings.arguments as int;
               return MaterialPageRoute(
-                builder: (_) => TvSeriesDetailPage(id: id),
+                builder: (_) => BlocProvider(
+                  create: (_) => di.locator<TvSeriesDetailBloc>(),
+                  child: TvSeriesDetailPage(id: id),
+                ),
                 settings: settings,
               );
             case AboutPage.ROUTE_NAME:

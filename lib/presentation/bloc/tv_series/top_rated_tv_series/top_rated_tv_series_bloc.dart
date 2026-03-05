@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'top_rated_tv_series_event.dart';
 part 'top_rated_tv_series_state.dart';
 
-class TopRatedTvSeriesBloc extends Bloc<TopRatedTvSeriesEvent, TopRatedTvSeriesState> {
+class TopRatedTvSeriesBloc
+    extends Bloc<TopRatedTvSeriesEvent, TopRatedTvSeriesState> {
   final GetTopRatedTvSeries getTopRatedTvSeries;
 
   TopRatedTvSeriesBloc({required this.getTopRatedTvSeries})
-      : super(const TopRatedTvSeriesInitial()) {
+    : super(const TopRatedTvSeriesInitial()) {
     on<FetchTopRatedTvSeriesEvent>(_onFetchTopRatedTvSeries);
   }
 

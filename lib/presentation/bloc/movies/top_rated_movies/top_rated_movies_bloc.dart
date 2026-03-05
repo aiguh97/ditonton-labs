@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'top_rated_movies_event.dart';
 part 'top_rated_movies_state.dart';
 
-class TopRatedMoviesBloc extends Bloc<TopRatedMoviesEvent, TopRatedMoviesState> {
+class TopRatedMoviesBloc
+    extends Bloc<TopRatedMoviesEvent, TopRatedMoviesState> {
   final GetTopRatedMovies getTopRatedMovies;
 
   TopRatedMoviesBloc({required this.getTopRatedMovies})
-      : super(const TopRatedMoviesInitial()) {
+    : super(const TopRatedMoviesInitial()) {
     on<FetchTopRatedMoviesEvent>(_onFetchTopRatedMovies);
   }
 

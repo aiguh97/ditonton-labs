@@ -23,17 +23,13 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Top Rated Movies'),
-      ),
+      appBar: AppBar(title: const Text('Top Rated Movies')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<TopRatedMoviesBloc, TopRatedMoviesState>(
           builder: (context, state) {
             if (state is TopRatedMoviesLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             } else if (state is TopRatedMoviesLoaded) {
               return ListView.builder(
                 itemBuilder: (context, index) {
@@ -59,9 +55,7 @@ class _TopRatedMoviesPageState extends State<TopRatedMoviesPage> {
                 child: Text(state.message),
               );
             } else {
-              return const Center(
-                child: Text('Failed'),
-              );
+              return const Center(child: Text('Failed'));
             }
           },
         ),

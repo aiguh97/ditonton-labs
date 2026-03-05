@@ -10,7 +10,7 @@ class PopularMoviesBloc extends Bloc<PopularMoviesEvent, PopularMoviesState> {
   final GetPopularMovies getPopularMovies;
 
   PopularMoviesBloc({required this.getPopularMovies})
-      : super(const PopularMoviesInitial()) {
+    : super(const PopularMoviesInitial()) {
     on<FetchPopularMoviesEvent>(_onFetchPopularMovies);
   }
 

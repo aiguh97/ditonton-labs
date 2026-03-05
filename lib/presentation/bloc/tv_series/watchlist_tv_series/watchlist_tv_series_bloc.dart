@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'watchlist_tv_series_event.dart';
 part 'watchlist_tv_series_state.dart';
 
-class WatchlistTvSeriesBloc extends Bloc<WatchlistTvSeriesEvent, WatchlistTvSeriesState> {
+class WatchlistTvSeriesBloc
+    extends Bloc<WatchlistTvSeriesEvent, WatchlistTvSeriesState> {
   final GetWatchlistTvSeries getWatchlistTvSeries;
 
   WatchlistTvSeriesBloc({required this.getWatchlistTvSeries})
-      : super(const WatchlistTvSeriesInitial()) {
+    : super(const WatchlistTvSeriesInitial()) {
     on<FetchWatchlistTvSeriesEvent>(_onFetchWatchlistTvSeries);
   }
 

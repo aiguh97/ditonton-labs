@@ -5,7 +5,16 @@ import 'package:ditonton/presentation/pages/tv_series/tv_series_detail_page.dart
 import 'package:ditonton/presentation/pages/tv_series/popular_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/search_tv_series_page.dart';
 import 'package:ditonton/presentation/pages/tv_series/top_rated_tv_series_page.dart';
-import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart' hide FetchPopularTvSeriesEvent, FetchTopRatedTvSeriesEvent, PopularTvSeriesLoading, PopularTvSeriesLoaded, PopularTvSeriesError, TopRatedTvSeriesLoading, TopRatedTvSeriesLoaded, TopRatedTvSeriesError;
+import 'package:ditonton/presentation/bloc/tv_series/tv_series_list/tv_series_list_bloc.dart'
+    hide
+        FetchPopularTvSeriesEvent,
+        FetchTopRatedTvSeriesEvent,
+        PopularTvSeriesLoading,
+        PopularTvSeriesLoaded,
+        PopularTvSeriesError,
+        TopRatedTvSeriesLoading,
+        TopRatedTvSeriesLoaded,
+        TopRatedTvSeriesError;
 import 'package:ditonton/presentation/bloc/tv_series/popular_tv_series/popular_tv_series_bloc.dart';
 import 'package:ditonton/presentation/bloc/tv_series/top_rated_tv_series/top_rated_tv_series_bloc.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +33,15 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      context.read<TvSeriesListBloc>().add(const FetchNowPlayingTvSeriesEvent());
-      context.read<PopularTvSeriesBloc>().add(const FetchPopularTvSeriesEvent());
-      context.read<TopRatedTvSeriesBloc>().add(const FetchTopRatedTvSeriesEvent());
+      context.read<TvSeriesListBloc>().add(
+        const FetchNowPlayingTvSeriesEvent(),
+      );
+      context.read<PopularTvSeriesBloc>().add(
+        const FetchPopularTvSeriesEvent(),
+      );
+      context.read<TopRatedTvSeriesBloc>().add(
+        const FetchTopRatedTvSeriesEvent(),
+      );
     });
   }
 
@@ -41,7 +56,7 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
               Navigator.pushNamed(context, SearchTvSeriesPage.ROUTE_NAME);
             },
             icon: const Icon(Icons.search),
-          )
+          ),
         ],
       ),
       body: Padding(
@@ -50,16 +65,11 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Now Playing',
-                style: kHeading6,
-              ),
+              Text('Now Playing', style: kHeading6),
               BlocBuilder<TvSeriesListBloc, TvSeriesListState>(
                 builder: (context, state) {
                   if (state is NowPlayingTvSeriesLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   } else if (state is NowPlayingTvSeriesLoaded) {
                     return TvSeriesList(state.tvSeries);
                   } else if (state is NowPlayingTvSeriesError) {
@@ -71,15 +81,15 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
               ),
               _buildSubHeading(
                 title: 'Popular',
-                onTap: () =>
-                    Navigator.pushNamed(context, PopularTvSeriesPage.ROUTE_NAME),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  PopularTvSeriesPage.ROUTE_NAME,
+                ),
               ),
               BlocBuilder<PopularTvSeriesBloc, PopularTvSeriesState>(
                 builder: (context, state) {
                   if (state is PopularTvSeriesLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   } else if (state is PopularTvSeriesLoaded) {
                     return TvSeriesList(state.tvSeries);
                   } else if (state is PopularTvSeriesError) {
@@ -91,15 +101,15 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
               ),
               _buildSubHeading(
                 title: 'Top Rated',
-                onTap: () =>
-                    Navigator.pushNamed(context, TopRatedTvSeriesPage.ROUTE_NAME),
+                onTap: () => Navigator.pushNamed(
+                  context,
+                  TopRatedTvSeriesPage.ROUTE_NAME,
+                ),
               ),
               BlocBuilder<TopRatedTvSeriesBloc, TopRatedTvSeriesState>(
                 builder: (context, state) {
                   if (state is TopRatedTvSeriesLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   } else if (state is TopRatedTvSeriesLoaded) {
                     return TvSeriesList(state.tvSeries);
                   } else if (state is TopRatedTvSeriesError) {
@@ -120,10 +130,7 @@ class _TvSeriesPageState extends State<TvSeriesPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          title,
-          style: kHeading6,
-        ),
+        Text(title, style: kHeading6),
         InkWell(
           onTap: onTap,
           child: Padding(
@@ -165,9 +172,8 @@ class TvSeriesList extends StatelessWidget {
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 child: CachedNetworkImage(
                   imageUrl: '$BASE_IMAGE_URL${tv.posterPath}',
-                  placeholder: (context, url) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
