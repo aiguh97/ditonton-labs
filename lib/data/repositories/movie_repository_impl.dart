@@ -25,7 +25,7 @@ class MovieRepositoryImpl implements MovieRepository {
       final result = await remoteDataSource.getNowPlayingMovies();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
+      return Left(ServerFailure('Server Failure'));
     } on SocketException catch (e) {
       return Left(ConnectionFailure(e.message));
     }
@@ -37,7 +37,7 @@ class MovieRepositoryImpl implements MovieRepository {
       final result = await remoteDataSource.getMovieDetail(id);
       return Right(result.toEntity());
     } on ServerException {
-      return Left(ServerFailure(''));
+      return Left(ServerFailure('Server Failure'));
     } on SocketException catch (e) {
       return Left(ConnectionFailure(e.message));
     }
@@ -49,7 +49,7 @@ class MovieRepositoryImpl implements MovieRepository {
       final result = await remoteDataSource.getMovieRecommendations(id);
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
+      return Left(ServerFailure('Server Failure'));
     } on SocketException catch (e) {
       return Left(ConnectionFailure(e.message));
     }
@@ -61,7 +61,7 @@ class MovieRepositoryImpl implements MovieRepository {
       final result = await remoteDataSource.getPopularMovies();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
+      return Left(ServerFailure('Server Failure'));
     } on SocketException catch (e) {
       return Left(ConnectionFailure(e.message));
     }
@@ -73,7 +73,7 @@ class MovieRepositoryImpl implements MovieRepository {
       final result = await remoteDataSource.getTopRatedMovies();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
+      return Left(ServerFailure('Server Failure'));
     } on SocketException catch (e) {
       return Left(ConnectionFailure(e.message));
     }

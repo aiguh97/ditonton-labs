@@ -25,9 +25,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.getNowPlayingTvSeries();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -37,9 +40,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.getPopularTvSeries();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -49,9 +55,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.getTopRatedTvSeries();
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -61,9 +70,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.searchTvSeries(query);
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -73,9 +85,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.getTvSeriesDetail(id);
       return Right(result.toEntity());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -87,9 +102,12 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
       final result = await remoteDataSource.getTvSeriesRecommendations(id);
       return Right(result.map((model) => model.toEntity()).toList());
     } on ServerException {
-      return Left(ServerFailure(''));
-    } on SocketException {
-      return Left(ConnectionFailure('Failed to connect to the network'));
+      return Left(ServerFailure('Server Failure'));
+    } on SocketException catch (e) {
+      final msg = (e.message != null && e.message.isNotEmpty)
+          ? e.message
+          : 'Failed to connect to the network';
+      return Left(ConnectionFailure(msg));
     }
   }
 
@@ -108,8 +126,9 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
   @override
   Future<Either<Failure, String>> removeWatchlist(TvSeriesDetail movie) async {
     try {
-      final result = await localDataSource
-          .removeWatchlist(TvSeriesTable.fromEntity(movie));
+      final result = await localDataSource.removeWatchlist(
+        TvSeriesTable.fromEntity(movie),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));
@@ -119,8 +138,9 @@ class TvSeriesRepositoryImpl extends TvSeriesRepository {
   @override
   Future<Either<Failure, String>> saveWatchlist(TvSeriesDetail tvSeries) async {
     try {
-      final result = await localDataSource
-          .insertWatchlist(TvSeriesTable.fromEntity(tvSeries));
+      final result = await localDataSource.insertWatchlist(
+        TvSeriesTable.fromEntity(tvSeries),
+      );
       return Right(result);
     } on DatabaseException catch (e) {
       return Left(DatabaseFailure(e.message));

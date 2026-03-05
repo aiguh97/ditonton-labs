@@ -2,6 +2,12 @@
 
 A new Flutter project.
 
+## CI Build Status
+
+![CI](https://img.shields.io/badge/CI-pending-lightgrey)
+
+After you push this repository to GitHub, replace the badge URL with your CI provider's badge (e.g., Codemagic or GitHub Actions) and attach a screenshot of a successful build in this repo's `assets/` or as a submission attachment.
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
