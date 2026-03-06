@@ -1,5 +1,6 @@
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/utils.dart';
+import 'package:ditonton/core/ssl_pinning.dart';
 import 'package:ditonton/presentation/pages/about_page.dart';
 import 'package:ditonton/presentation/pages/home_page.dart';
 import 'package:ditonton/presentation/pages/movies/movie_detail_page.dart';
@@ -37,11 +38,9 @@ import 'dart:async';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize SSL pinning if cert provided
-  // await di.init(); // service locator
 
-  // Initialize dependency injection
-  di.init();
+  // Dependency Injection
+  await di.init();
 
   // Initialize Firebase if configuration files are present.
   try {

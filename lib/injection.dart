@@ -46,12 +46,14 @@ import 'package:get_it/get_it.dart';
 
 final locator = GetIt.instance;
 
-void init() async {
-  //SSL Pinning
+Future<void> init() async {
+  // SSL Pinning
   final client = await SSLPinning.createPinnedClient();
+  locator.registerLazySingleton<http.Client>(() => client);
 
-  locator.registerLazySingleton(
-    () => TvSeriesRemoteDataSourceImpl(client: client),
+  // data sources
+  locator.registerLazySingleton<MovieRemoteDataSource>(
+    () => MovieRemoteDataSourceImpl(client: locator()),
   );
 
   // BLoC movies
