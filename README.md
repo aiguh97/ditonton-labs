@@ -78,6 +78,15 @@ CI pipeline includes:
 
 ------------------------------------------------------------------------
 
+## 📊 Test Coverage
+
+The application integrates test coverage All Passed
+### Screenshot
+
+![Test Coverage](screenshoots/coverage.png)
+
+------------------------------------------------------------------------
+
 # Architecture
 
 This project follows **Clean Architecture** principles.
