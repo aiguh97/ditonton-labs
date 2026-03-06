@@ -1,3 +1,4 @@
+import 'package:ditonton/core/ssl_pinning.dart';
 import 'package:ditonton/data/datasources/db/database_helper.dart';
 import 'package:ditonton/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/data/datasources/movie_remote_data_source.dart';
@@ -45,7 +46,14 @@ import 'package:get_it/get_it.dart';
 
 final locator = GetIt.instance;
 
-void init() {
+void init() async {
+  //SSL Pinning
+  final client = await SSLPinning.createPinnedClient();
+
+  locator.registerLazySingleton(
+    () => TvSeriesRemoteDataSourceImpl(client: client),
+  );
+
   // BLoC movies
   locator.registerFactory(
     () => MovieListBloc(

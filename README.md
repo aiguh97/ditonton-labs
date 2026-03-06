@@ -128,16 +128,7 @@ flutter test --coverage
 
 ------------------------------------------------------------------------
 
-# screenshoots
 
-All feature screenshoots are located inside the **screenshoots** folder.
-
-    screenshoots/
-     ├── ci.png
-     ├── firebase_analytics.png
-     ├── firebase_crashlytics.png
-
-------------------------------------------------------------------------
 
 # Tech Stack
 

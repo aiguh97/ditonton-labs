@@ -7,7 +7,8 @@ import 'package:ditonton/data/models/tv_series_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:http/http.dart' as http;
-
+import 'dart:async';
+import 'dart:io';
 import '../../helpers/test_helper.mocks.dart';
 import '../../json_reader.dart';
 
@@ -18,6 +19,10 @@ void main() {
   late TvSeriesRemoteDataSourceImpl dataSource;
   late MockHttpClient mockHttpClient;
 
+  setUpAll(() {
+    HttpOverrides.global = null;
+  });
+
   setUp(() {
     mockHttpClient = MockHttpClient();
     dataSource = TvSeriesRemoteDataSourceImpl(client: mockHttpClient);
@@ -27,6 +32,26 @@ void main() {
     final tTvSeriesList = TvSeriesResponse.fromJson(
       json.decode(readJson('dummy_data/tv_series/now_playing.json')),
     ).tvSeriesList;
+
+    test('should throw SocketException when there is no internet', () async {
+      when(
+        mockHttpClient.get(any),
+      ).thenThrow(const SocketException('Failed to connect'));
+
+      final call = dataSource.getNowPlayingTvSeries();
+
+      expect(() => call, throwsA(isA<SocketException>()));
+    });
+
+    test('should throw SocketException when request timeout', () async {
+      when(
+        mockHttpClient.get(any, headers: anyNamed('headers')),
+      ).thenThrow(TimeoutException('Request timeout'));
+
+      final call = dataSource.getNowPlayingTvSeries();
+
+      expect(() => call, throwsA(isA<SocketException>()));
+    });
 
     test(
       'should return list of TV Series Model when response code is 200',

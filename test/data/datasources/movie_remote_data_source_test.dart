@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:ditonton/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/data/models/movie_detail_model.dart';
-import 'package:ditonton/data/models/movie_model.dart';
+import 'dart:async';
+import 'dart:io';
 import 'package:ditonton/data/models/movie_response.dart';
 import 'package:ditonton/common/exception.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +18,10 @@ void main() {
 
   late MockHttpClient mockHttpClient;
   late MovieRemoteDataSourceImpl dataSource;
+
+  setUpAll(() {
+    HttpOverrides.global = null;
+  });
 
   setUp(() {
     mockHttpClient = MockHttpClient();
@@ -46,6 +51,35 @@ void main() {
         expect(result, equals(tMovieList));
       },
     );
+
+    test('should throw SocketException when there is no internet', () async {
+      // arrange
+      when(
+        mockHttpClient.get(Uri.parse('$BASE_URL/movie/now_playing?$API_KEY')),
+      ).thenThrow(const SocketException('Failed to connect'));
+
+      // act
+      final call = dataSource.getNowPlayingMovies();
+
+      // assert
+      expect(() => call, throwsA(isA<SocketException>()));
+    });
+
+    test('should throw SocketException when request timeout', () async {
+      // arrange
+      when(
+        mockHttpClient.get(Uri.parse('$BASE_URL/movie/now_playing?$API_KEY')),
+      ).thenAnswer((_) async {
+        await Future.delayed(const Duration(seconds: 11));
+        return http.Response('Timeout', 500);
+      });
+
+      // act
+      final call = dataSource.getNowPlayingMovies();
+
+      // assert
+      expect(() => call, throwsA(isA<SocketException>()));
+    });
 
     test(
       'should throw ServerException when response code is not 200',

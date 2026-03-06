@@ -40,7 +40,7 @@ import 'dart:async';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize SSL pinning if cert provided
-  await MyHttpOverrides.initialize();
+  await init(); // service locator
 
   // Initialize dependency injection
   di.init();
