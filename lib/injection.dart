@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ditonton/core/ssl_pinning.dart';
 import 'package:ditonton/data/datasources/db/database_helper.dart';
 import 'package:ditonton/data/datasources/movie_local_data_source.dart';
@@ -43,17 +45,32 @@ import 'package:ditonton/presentation/bloc/tv_series/tv_series_search/tv_series_
 import 'package:ditonton/presentation/bloc/tv_series/watchlist_tv_series/watchlist_tv_series_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
+import 'package:http/io_client.dart';
 
 final locator = GetIt.instance;
 
 Future<void> init() async {
   // SSL Pinning
-  final client = await SSLPinning.createPinnedClient();
+
+  IOClient client;
+
+  try {
+    client = await SSLPinning.createPinnedClient();
+    print("SSL PINNING ACTIVE");
+  } catch (e) {
+    print("SSL PINNING FAILED: $e");
+    client = IOClient(HttpClient());
+  }
+
   locator.registerLazySingleton<http.Client>(() => client);
 
   // data sources
   locator.registerLazySingleton<MovieRemoteDataSource>(
     () => MovieRemoteDataSourceImpl(client: locator()),
+  );
+
+  locator.registerLazySingleton<TvSeriesRemoteDataSource>(
+    () => TvSeriesRemoteDataSourceImpl(client: locator()),
   );
 
   // BLoC movies
@@ -149,23 +166,14 @@ Future<void> init() async {
     ),
   );
 
-  // data sources
-  locator.registerLazySingleton<MovieRemoteDataSource>(
-    () => MovieRemoteDataSourceImpl(client: locator()),
-  );
   locator.registerLazySingleton<MovieLocalDataSource>(
     () => MovieLocalDataSourceImpl(databaseHelper: locator()),
   );
-  locator.registerLazySingleton<TvSeriesRemoteDataSource>(
-    () => TvSeriesRemoteDataSourceImpl(client: locator()),
-  );
+
   locator.registerLazySingleton<TvSeriesLocalDataSource>(
     () => TvSeriesLocalDataSourceImpl(databaseHelper: locator()),
   );
 
   // helper
   locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
-
-  // external
-  locator.registerLazySingleton(() => http.Client());
 }
