@@ -59,7 +59,12 @@ Future<void> init() async {
     print("SSL PINNING ACTIVE");
   } catch (e) {
     print("SSL PINNING FAILED: $e");
-    client = IOClient(HttpClient());
+
+    // create client tapi tanpa trusted cert
+    final badClient = HttpClient(
+      context: SecurityContext(withTrustedRoots: false),
+    );
+    client = IOClient(badClient);
   }
 
   locator.registerLazySingleton<http.Client>(() => client);
